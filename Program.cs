@@ -4,6 +4,7 @@ using dotNetCources.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using dotNetCources.Settings;
 
 namespace dotNetCources
 {
@@ -44,6 +45,10 @@ namespace dotNetCources
 				.AddJsonFile("appsettings.json", optional: true)
 				.Build(); // Строит окончательную конфигурацию
 
+			// Подключение конфигов
+			builder.Services.Configure<EmailSettings>(
+					configuration.GetSection("EmailSettings")
+				);
 
 			// Добавляем JWT аутентификацию
 			builder.Services.AddAuthentication(options =>
@@ -79,6 +84,7 @@ namespace dotNetCources
 			builder.Services.AddScoped<IProfileService, ProfileService>();
 			builder.Services.AddScoped<ITokenService, TokenService>();
 			builder.Services.AddScoped<ICategoryService, CategoryService>();
+			builder.Services.AddTransient<IEmailService, EmailService>();
 
 
 

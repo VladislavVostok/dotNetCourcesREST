@@ -14,11 +14,14 @@ namespace dotNetCources.Controllers
 		private readonly UserManager<User> _userManager;
 		private readonly ITokenService _tokenService;
 		private readonly IProfileService _profileService;
+		private readonly IEmailService _emailService;
 
-		public AuthController(UserManager<User> userManager, ITokenService tokenService)
-		{
+		public AuthController(	UserManager<User> userManager, 
+								ITokenService tokenService, 
+								IEmailService emailService){
 			_userManager = userManager;
 			_tokenService = tokenService;
+			_emailService = emailService;
 		}
 
 		[HttpPost("login")]
@@ -51,7 +54,7 @@ namespace dotNetCources.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
 		{
-			var user = new User
+			User user = new User
 			{
 				Email = registerDto.Email,
 				UserName = registerDto.UserName,
@@ -62,7 +65,7 @@ namespace dotNetCources.Controllers
 
 			if (result.Succeeded)
 			{
-				_profileService.CreateProfileForUser(user);
+				//_profileService.CreateProfileForUser(user);
 			
 				return Ok(new { message = "User registered successfully" });
 			}
@@ -83,10 +86,13 @@ namespace dotNetCources.Controllers
 
 				var link = $"http://localhost:5173/password-reset?otp={user.OTP}&uuid={user.Id}&refresh_token={user.RefreshToken}";
 				// TODO: Configure Email Sending
+
+				await _emailService.SendEmailAsync(user.Email, "Восстановление пароля", link);
 				Console.WriteLine($"Reset Link: {link}");
+				return Ok(new { message = "If the email exists, a reset link was sent." });
 			}
 
-			return Ok(new { message = "If the email exists, a reset link was sent." });
+			return BadRequest(new { message = "Такого email не существует!" });
 		}
 
 		private string GenerateRandomOtp(int length)
