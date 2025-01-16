@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotNetCources.Models;
+using dotNetCources.States;
+using Microsoft.AspNetCore.Authorization;
+using dotNetCources.DTO.Courses;
 
 namespace dotNetCources.Controllers
 {
@@ -20,15 +18,29 @@ namespace dotNetCources.Controllers
             _context = context;
         }
 
-        // GET: api/Courses
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+
+		[HttpGet("search")]
+		public async Task<ActionResult> SearchCourses(string query)
+		{
+			var courses = await _context.Courses
+				.Where(c => c.Title.Contains(query) && c.PlatformStatus == PlatformStatus.Published && c.TeacherCourseStatus == TeacherStatus.Published)
+				.ToListAsync();
+
+			return Ok(courses);
+		}
+	
+
+	    // GET: api/Courses
+	    [HttpGet]
+		[AllowAnonymous]
+		public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
             return await _context.Courses.ToListAsync();
         }
 
         // GET: api/Courses/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<Course>> GetCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);
@@ -41,9 +53,10 @@ namespace dotNetCources.Controllers
             return course;
         }
 
-        // PUT: api/Courses/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+        // PUT: api/Courses/5  
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutCourse(int id, Course course)
         {
             if (id != course.Id)
@@ -73,10 +86,24 @@ namespace dotNetCources.Controllers
         }
 
         // POST: api/Courses
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
-        {
+        //[Authorize]
+        public async Task<ActionResult<Course>> PostCourse([FromBody] CourceCreateRequestDTO courseCreateRequestDTO)
+        {   
+            Course course = new()
+            { 
+                CategoryId = courseCreateRequestDTO.CategoryId,
+                TeacherId = courseCreateRequestDTO.TeacherId,
+                File = courseCreateRequestDTO.File,
+                Image = courseCreateRequestDTO.Image,
+                Title = courseCreateRequestDTO.Title,
+                Description = courseCreateRequestDTO.Description,
+                Price = courseCreateRequestDTO.Price,
+                Language = courseCreateRequestDTO.Language,
+                Level = courseCreateRequestDTO.Level,
+                TeacherCourseStatus = courseCreateRequestDTO.TeacherCourseStatus
+            } ;
+
             _context.Courses.Add(course);
             await _context.SaveChangesAsync();
 
@@ -85,7 +112,8 @@ namespace dotNetCources.Controllers
 
         // DELETE: api/Courses/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCourse(int id)
+		[Authorize]
+		public async Task<IActionResult> DeleteCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);
             if (course == null)

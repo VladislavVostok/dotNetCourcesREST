@@ -3,11 +3,11 @@ using dotNetCources.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using dotNetCources.DTO;
 using Microsoft.AspNetCore.Authorization;
+using dotNetCources.DTO.Authorization;
 namespace dotNetCources.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class AuthController : ControllerBase
 	{

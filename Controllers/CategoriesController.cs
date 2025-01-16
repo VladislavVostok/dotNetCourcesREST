@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using dotNetCources.Models;
 using dotNetCources.Services;
+using dotNetCources.DTO.Category;
 
 namespace dotNetCources.Controllers
 {
@@ -15,14 +11,15 @@ namespace dotNetCources.Controllers
     public class CategoriesController : ControllerBase
     {
         private readonly AppContextDB _context;
-        //private readonly ILogger _logger;
+
+
         private readonly ICategoryService _categoryService;
 
         public CategoriesController(AppContextDB context,  ICategoryService categoryService)
         {
             _context = context;
             _categoryService = categoryService;
-           // _logger = logger;
+
 
 		}
 
@@ -32,6 +29,8 @@ namespace dotNetCources.Controllers
         {
             return await _context.Categories.ToListAsync();
         }
+
+
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
@@ -47,8 +46,8 @@ namespace dotNetCources.Controllers
             return category;
         }
 
+
         // PUT: api/Categories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
@@ -79,10 +78,15 @@ namespace dotNetCources.Controllers
         }
 
         // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+               [HttpPost]
+        public async Task<ActionResult<Category>> PostCategory([FromBody]CategoryCreateRequestDTO categoryCreateRequestDTO)
         {
+
+            Category category = new()
+            {
+                Title = categoryCreateRequestDTO.Title,
+                Slug = categoryCreateRequestDTO.Slug
+            };
 
 			return await _categoryService.AddCategoryAsync(category); ;
         }

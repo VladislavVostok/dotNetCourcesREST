@@ -6,12 +6,16 @@ namespace dotNetCources.Models
 	public class AppContextDB : IdentityDbContext<User>
 	{
 		public DbSet<Profile> Profiles { get; set; }
-
 		public DbSet<Course> Courses { get; set; }
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Teacher> Teachers { get; set; }
-		public DbSet<Country> Countries { get; set; }
-
+		public DbSet<Cart> Carts { get; set; }
+		public DbSet<CartOrder> CartOrders { get; set; }
+		public DbSet<CartOrderItem> CartOrderItems { get; set; }
+		public DbSet<Coupon> Coupons { get; set; }
+		public DbSet<QuestionAnswerMessage> QuestionAnswerMessages { get; set; }
+		public DbSet<Variant> Variants { get; set; }
+		public DbSet<VariantItem> VariantItems { get; set; }
 
 
 		public AppContextDB(DbContextOptions<AppContextDB> options) : base(options) { }
@@ -41,12 +45,34 @@ namespace dotNetCources.Models
 
 			// Fluent API Teacher
 			modelBuilder.Entity<Teacher>().HasKey(t => t.Id).HasName("PK_Teacher");
-			modelBuilder.Entity<Teacher>().HasOne(t => t.Country).WithMany(c => c.Teachers); ;
 
-			// Fluent API Country
-			modelBuilder.Entity<Country>().HasKey(c => c.Id).HasName("PK_Country"); ;
 
+			// Fluent API Cart
+			modelBuilder.Entity<Cart>().HasKey(c => c.Id).HasName("PK_Cart");
+			modelBuilder.Entity<Cart>().HasOne(c => c.Course).WithMany(c => c.Carts);
+
+
+
+			// Fluent API
 			
+			
+			
+			
+			// Fluent API
+			
+			
+			
+			
+			// Fluent API
+			
+			
+			
+			// Fluent API
+			// Fluent API
+			// Fluent API
+			// Fluent API
+
+
 
 
 			base.OnModelCreating(modelBuilder);

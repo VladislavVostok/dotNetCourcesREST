@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using dotNetCources.Models;
 using dotNetCources.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using dotNetCources.Settings;
 
