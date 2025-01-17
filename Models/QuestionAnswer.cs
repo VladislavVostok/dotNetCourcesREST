@@ -13,10 +13,10 @@ namespace dotNetCources.Models
 		[ForeignKey("CourseId")]
 		public Course Course { get; set; }
 
-		//public int? UserId { get; set; }
+		public string? UserId { get; set; }
 
-		//[ForeignKey("UserId")]
-		//public User User { get; set; }
+		[ForeignKey("UserId")]
+		public User User { get; set; }
 
 		[MaxLength(1000)]
 		public string Title { get; set; }

@@ -20,5 +20,7 @@ namespace dotNetCources.Models
 		public string VariantId { get; set; } = Guid.NewGuid().ToString().Substring(0, 6);
 
 		public DateTime Date { get; set; } = DateTime.Now;
+
+		public virtual ICollection<VariantItem> VariantItems { get; set; }
 	}
 }

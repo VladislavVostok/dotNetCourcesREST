@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.TextTemplating;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace dotNetCources.Models
@@ -9,19 +8,17 @@ namespace dotNetCources.Models
 		[Key]
 		public int Id { get; set; }
 
-        public int TeacherId { get; set; }
 		[ForeignKey("TeacherId")]
+		public int TeacherId { get; set; }
 		public Teacher Teacher { get; set; }
 
 		// TODO: Сделать Many-to-Many по этому ключу
-		public int UserId { get; set; }
+		public ICollection<User> UsedBy { get; set; } = new List<User>();
 
-		//[ForeignKey("UserId")]
-		//public User User { get; set; }
-
-		[MaxLength(100)]
+		[Required]
+		[MaxLength(50)] // Максимальная длина строки
 		public string Code { get; set; }
-		
+
 		public int Discount { get; set; }
 		public bool IsActive { get; set; }
 		public DateTime date { get; set; } = DateTime.Now;

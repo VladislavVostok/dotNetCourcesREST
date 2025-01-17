@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace dotNetCources.Models
 {
-	public class User : IdentityUser 
-	{
+	public class User : IdentityUser
+	{ 
 		[Required]
 		[MaxLength(100)]
 		public override string UserName { get; set; }
@@ -24,6 +24,15 @@ namespace dotNetCources.Models
 		public string? RefreshToken { get; set; }
 
 		public Profile Profile { get; set; }
+
+		public ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();
+		public ICollection<EnrolledCourse> EnrolledCourses { get; set; }
+		public ICollection<Review> Reviews { get; set; }
+		public ICollection<CompletedLesson> CompletedLessons { get; set; }
+		public ICollection<QuestionAnswer> QuestionAnswers { get; set; }
+		public ICollection<Teacher> Teachers { get; set; }
+		public ICollection<Wishlist> Wishlists { get; set; }
+
 
 		public override string ToString()
 		{

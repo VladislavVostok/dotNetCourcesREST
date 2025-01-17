@@ -53,5 +53,11 @@ namespace dotNetCources.Models
 
 
 		public virtual ICollection<Cart> Carts { get; set; }
+		public virtual ICollection<Variant> Variants { get; set; }
+		public virtual ICollection<VariantItem> VariantItems { get; set; }
+		public ICollection<EnrolledCourse> EnrolledCourses { get; set; }
+		public ICollection<Review> Reviews { get; set; }
+		public ICollection<QuestionAnswerMessage> QuestionAnswerMessages { get; set; }
+		public ICollection<Wishlist> Wishlists { get; set; }
 	}
 }

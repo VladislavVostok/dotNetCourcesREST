@@ -12,8 +12,8 @@ using dotNetCources.Models;
 namespace dotNetCources.Migrations
 {
     [DbContext(typeof(AppContextDB))]
-    [Migration("20250116172931_NewModelsAdded")]
-    partial class NewModelsAdded
+    [Migration("20250117180015_ALLMig5")]
+    partial class ALLMig5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace dotNetCources.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+
+            modelBuilder.Entity("CouponUser", b =>
+                {
+                    b.Property<int>("CouponsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsedById")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("CouponsId", "UsedById");
+
+                    b.HasIndex("UsedById");
+
+                    b.ToTable("CouponUsers", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -355,6 +370,112 @@ namespace dotNetCources.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("dotNetCources.Models.Certificate", b =>
+                {
+                    b.Property<string>("CertificateId")
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int?>("CourseId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("CertificateId")
+                        .HasName("PK_Certificate");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Certificates");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.CompletedLesson", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CompletedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnrolledCourseEnrollmentId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("EnrolledCourseId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("LessonTitle")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int?>("VariantItemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("PK_CompletedLesson");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("EnrolledCourseEnrollmentId");
+
+                    b.HasIndex("EnrolledCourseId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.HasIndex("VariantItemId");
+
+                    b.ToTable("CompletedLessons");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
+
+                    b.Property<int>("TaxRate")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Country");
+
+                    b.ToTable("Countries");
+                });
+
             modelBuilder.Entity("dotNetCources.Models.Coupon", b =>
                 {
                     b.Property<int>("Id")
@@ -371,8 +492,8 @@ namespace dotNetCources.Migrations
 
                     b.Property<string>("Code")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
@@ -383,13 +504,11 @@ namespace dotNetCources.Migrations
                     b.Property<int>("TeacherId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("date")
                         .HasColumnType("datetime(6)");
 
-                    b.HasKey("Id");
+                    b.HasKey("Id")
+                        .HasName("PK_Coupon");
 
                     b.HasIndex("CartOrderId");
 
@@ -475,6 +594,54 @@ namespace dotNetCources.Migrations
                     b.ToTable("Courses");
                 });
 
+            modelBuilder.Entity("dotNetCources.Models.EnrolledCourse", b =>
+                {
+                    b.Property<string>("EnrollmentId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CourseId1")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("EnrollmentId")
+                        .HasName("PK_EnrolledCourse");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("CourseId1");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("EnrolledCourses");
+                });
+
             modelBuilder.Entity("dotNetCources.Models.Profile", b =>
                 {
                     b.Property<int>("Id")
@@ -540,9 +707,14 @@ namespace dotNetCources.Migrations
                         .HasMaxLength(1000)
                         .HasColumnType("varchar(1000)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("QuestionAnswer");
                 });
@@ -572,13 +744,66 @@ namespace dotNetCources.Migrations
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
                     b.HasIndex("QuestionId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("QuestionAnswerMessages");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CourseId1")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReviewText")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Review");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("CourseId1");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Teacher", b =>
@@ -626,6 +851,10 @@ namespace dotNetCources.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.Property<string>("VK")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -634,6 +863,8 @@ namespace dotNetCources.Migrations
                         .HasName("PK_Teacher");
 
                     b.HasIndex("CartOrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Teachers");
                 });
@@ -759,6 +990,9 @@ namespace dotNetCources.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("CourseId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
@@ -790,9 +1024,61 @@ namespace dotNetCources.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseId");
+
                     b.HasIndex("VariantId");
 
                     b.ToTable("VariantItems");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.Wishlist", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CourseId1")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserId1")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id")
+                        .HasName("PK_Wishlist");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("CourseId1");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
+
+                    b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("CouponUser", b =>
+                {
+                    b.HasOne("dotNetCources.Models.Coupon", null)
+                        .WithMany()
+                        .HasForeignKey("CouponsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -903,6 +1189,64 @@ namespace dotNetCources.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("dotNetCources.Models.Certificate", b =>
+                {
+                    b.HasOne("dotNetCources.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.CompletedLesson", b =>
+                {
+                    b.HasOne("dotNetCources.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.EnrolledCourse", null)
+                        .WithMany("CompletedLessons")
+                        .HasForeignKey("EnrolledCourseEnrollmentId");
+
+                    b.HasOne("dotNetCources.Models.EnrolledCourse", "EnrolledCourse")
+                        .WithMany()
+                        .HasForeignKey("EnrolledCourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("dotNetCources.Models.User", null)
+                        .WithMany("CompletedLessons")
+                        .HasForeignKey("UserId1");
+
+                    b.HasOne("dotNetCources.Models.VariantItem", "VariantItem")
+                        .WithMany()
+                        .HasForeignKey("VariantItemId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Course");
+
+                    b.Navigation("EnrolledCourse");
+
+                    b.Navigation("User");
+
+                    b.Navigation("VariantItem");
+                });
+
             modelBuilder.Entity("dotNetCources.Models.Coupon", b =>
                 {
                     b.HasOne("dotNetCources.Models.CartOrder", null)
@@ -943,6 +1287,49 @@ namespace dotNetCources.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("dotNetCources.Models.EnrolledCourse", b =>
+                {
+                    b.HasOne("dotNetCources.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.Course", null)
+                        .WithMany("EnrolledCourses")
+                        .HasForeignKey("CourseId1");
+
+                    b.HasOne("dotNetCources.Models.CartOrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.Teacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", null)
+                        .WithMany("EnrolledCourses")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("OrderItem");
+
+                    b.Navigation("Teacher");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("dotNetCources.Models.Profile", b =>
                 {
                     b.HasOne("dotNetCources.Models.User", "User")
@@ -962,13 +1349,19 @@ namespace dotNetCources.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany("QuestionAnswers")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Course");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.QuestionAnswerMessage", b =>
                 {
                     b.HasOne("dotNetCources.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("QuestionAnswerMessages")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -979,9 +1372,42 @@ namespace dotNetCources.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Course");
 
                     b.Navigation("Question");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.Review", b =>
+                {
+                    b.HasOne("dotNetCources.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.Course", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("CourseId1");
+
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", null)
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Teacher", b =>
@@ -989,12 +1415,20 @@ namespace dotNetCources.Migrations
                     b.HasOne("dotNetCources.Models.CartOrder", null)
                         .WithMany("Teachers")
                         .HasForeignKey("CartOrderId");
+
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany("Teachers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Variant", b =>
                 {
                     b.HasOne("dotNetCources.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("Variants")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1004,13 +1438,44 @@ namespace dotNetCources.Migrations
 
             modelBuilder.Entity("dotNetCources.Models.VariantItem", b =>
                 {
+                    b.HasOne("dotNetCources.Models.Course", null)
+                        .WithMany("VariantItems")
+                        .HasForeignKey("CourseId");
+
                     b.HasOne("dotNetCources.Models.Variant", "Variant")
-                        .WithMany()
+                        .WithMany("VariantItems")
                         .HasForeignKey("VariantId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Variant");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.Wishlist", b =>
+                {
+                    b.HasOne("dotNetCources.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.Course", null)
+                        .WithMany("Wishlists")
+                        .HasForeignKey("CourseId1");
+
+                    b.HasOne("dotNetCources.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.User", null)
+                        .WithMany("Wishlists")
+                        .HasForeignKey("UserId1");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Cart", b =>
@@ -1040,6 +1505,23 @@ namespace dotNetCources.Migrations
             modelBuilder.Entity("dotNetCources.Models.Course", b =>
                 {
                     b.Navigation("Carts");
+
+                    b.Navigation("EnrolledCourses");
+
+                    b.Navigation("QuestionAnswerMessages");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("VariantItems");
+
+                    b.Navigation("Variants");
+
+                    b.Navigation("Wishlists");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.EnrolledCourse", b =>
+                {
+                    b.Navigation("CompletedLessons");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Teacher", b =>
@@ -1049,8 +1531,25 @@ namespace dotNetCources.Migrations
 
             modelBuilder.Entity("dotNetCources.Models.User", b =>
                 {
+                    b.Navigation("CompletedLessons");
+
+                    b.Navigation("EnrolledCourses");
+
                     b.Navigation("Profile")
                         .IsRequired();
+
+                    b.Navigation("QuestionAnswers");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("Teachers");
+
+                    b.Navigation("Wishlists");
+                });
+
+            modelBuilder.Entity("dotNetCources.Models.Variant", b =>
+                {
+                    b.Navigation("VariantItems");
                 });
 #pragma warning restore 612, 618
         }

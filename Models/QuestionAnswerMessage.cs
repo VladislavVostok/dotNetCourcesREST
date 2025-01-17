@@ -18,10 +18,10 @@ namespace dotNetCources.Models
 		[ForeignKey("QuestionId")]
 		public QuestionAnswer Question { get; set; }
 
-		//public int? UserId { get; set; }
+		public string? UserId { get; set; }
 
-		//[ForeignKey("UserId")]
-		//public User User { get; set; }
+		[ForeignKey("UserId")]
+		public User User { get; set; }
 
 		public string Message { get; set; }
 

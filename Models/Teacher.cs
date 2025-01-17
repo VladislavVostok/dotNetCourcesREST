@@ -9,11 +9,11 @@ namespace dotNetCources.Models
 		[Key]
 		public int Id { get; set; }
 
-		//[Required]
-		//public int UserId { get; set; }
+		[Required]
+		public string UserId { get; set; }
 
-		//[ForeignKey("UserId")]
-		//public User User { get; set; }
+		[ForeignKey("UserId")]
+		public User User { get; set; }
 
 		[MaxLength(100)]
 		public string FullName { get; set; }
