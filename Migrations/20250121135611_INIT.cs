@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace dotNetCources.Migrations
 {
     /// <inheritdoc />
-    public partial class ALLMig5 : Migration
+    public partial class INIT : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -564,59 +564,46 @@ namespace dotNetCources.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "EnrolledCourses",
+                name: "EnrolledCourse",
                 columns: table => new
                 {
-                    EnrollmentId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CourseId = table.Column<int>(type: "int", nullable: false),
                     TeacherId = table.Column<int>(type: "int", nullable: false),
                     OrderItemId = table.Column<int>(type: "int", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CourseId1 = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    EnrollmentId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EnrolledCourse", x => x.EnrollmentId);
+                    table.PrimaryKey("PK_EnrolledCourse", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EnrolledCourses_AspNetUsers_UserId",
+                        name: "FK_EnrolledCourse_AspNetUsers_UserId",
                         column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_EnrolledCourses_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_EnrolledCourses_CartOrderItems_OrderItemId",
+                        name: "FK_EnrolledCourse_CartOrderItems_OrderItemId",
                         column: x => x.OrderItemId,
                         principalTable: "CartOrderItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EnrolledCourses_Courses_CourseId",
+                        name: "FK_EnrolledCourse_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_EnrolledCourses_Courses_CourseId1",
-                        column: x => x.CourseId1,
-                        principalTable: "Courses",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_EnrolledCourses_Teachers_TeacherId",
+                        name: "FK_EnrolledCourse_Teachers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "Teachers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -653,7 +640,7 @@ namespace dotNetCources.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Reviews",
+                name: "Review",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -665,36 +652,23 @@ namespace dotNetCources.Migrations
                     ReviewText = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CourseId1 = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Review", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reviews_AspNetUsers_UserId",
+                        name: "FK_Review_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reviews_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Reviews_Courses_CourseId",
+                        name: "FK_Review_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Courses_CourseId1",
-                        column: x => x.CourseId1,
-                        principalTable: "Courses",
-                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -724,43 +698,30 @@ namespace dotNetCources.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Wishlists",
+                name: "Wishlist",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CourseId = table.Column<int>(type: "int", nullable: false),
-                    CourseId1 = table.Column<int>(type: "int", nullable: true),
-                    UserId1 = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                    CourseId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Wishlist", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Wishlists_AspNetUsers_UserId",
+                        name: "FK_Wishlist_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Wishlists_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Wishlists_Courses_CourseId",
+                        name: "FK_Wishlist_Courses_CourseId",
                         column: x => x.CourseId,
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Wishlists_Courses_CourseId1",
-                        column: x => x.CourseId1,
-                        principalTable: "Courses",
-                        principalColumn: "Id");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -857,7 +818,7 @@ namespace dotNetCources.Migrations
                     LessonTitle = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CompletedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    EnrolledCourseEnrollmentId = table.Column<string>(type: "varchar(255)", nullable: true)
+                    EnrolledCourseId1 = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId1 = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
@@ -883,16 +844,16 @@ namespace dotNetCources.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CompletedLessons_EnrolledCourses_EnrolledCourseEnrollmentId",
-                        column: x => x.EnrolledCourseEnrollmentId,
-                        principalTable: "EnrolledCourses",
-                        principalColumn: "EnrollmentId");
-                    table.ForeignKey(
-                        name: "FK_CompletedLessons_EnrolledCourses_EnrolledCourseId",
+                        name: "FK_CompletedLessons_EnrolledCourse_EnrolledCourseId",
                         column: x => x.EnrolledCourseId,
-                        principalTable: "EnrolledCourses",
-                        principalColumn: "EnrollmentId",
+                        principalTable: "EnrolledCourse",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CompletedLessons_EnrolledCourse_EnrolledCourseId1",
+                        column: x => x.EnrolledCourseId1,
+                        principalTable: "EnrolledCourse",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_CompletedLessons_VariantItems_VariantItemId",
                         column: x => x.VariantItemId,
@@ -985,14 +946,14 @@ namespace dotNetCources.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CompletedLessons_EnrolledCourseEnrollmentId",
-                table: "CompletedLessons",
-                column: "EnrolledCourseEnrollmentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_CompletedLessons_EnrolledCourseId",
                 table: "CompletedLessons",
                 column: "EnrolledCourseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CompletedLessons_EnrolledCourseId1",
+                table: "CompletedLessons",
+                column: "EnrolledCourseId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CompletedLessons_UserId",
@@ -1045,34 +1006,24 @@ namespace dotNetCources.Migrations
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EnrolledCourses_CourseId",
-                table: "EnrolledCourses",
+                name: "IX_EnrolledCourse_CourseId",
+                table: "EnrolledCourse",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EnrolledCourses_CourseId1",
-                table: "EnrolledCourses",
-                column: "CourseId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EnrolledCourses_OrderItemId",
-                table: "EnrolledCourses",
+                name: "IX_EnrolledCourse_OrderItemId",
+                table: "EnrolledCourse",
                 column: "OrderItemId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EnrolledCourses_TeacherId",
-                table: "EnrolledCourses",
+                name: "IX_EnrolledCourse_TeacherId",
+                table: "EnrolledCourse",
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EnrolledCourses_UserId",
-                table: "EnrolledCourses",
+                name: "IX_EnrolledCourse_UserId",
+                table: "EnrolledCourse",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EnrolledCourses_UserId1",
-                table: "EnrolledCourses",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Profiles_UserId",
@@ -1106,24 +1057,14 @@ namespace dotNetCources.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_CourseId",
-                table: "Reviews",
+                name: "IX_Review_CourseId",
+                table: "Review",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reviews_CourseId1",
-                table: "Reviews",
-                column: "CourseId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId",
-                table: "Reviews",
+                name: "IX_Review_UserId",
+                table: "Review",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_UserId1",
-                table: "Reviews",
-                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Teachers_CartOrderId",
@@ -1151,24 +1092,14 @@ namespace dotNetCources.Migrations
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wishlists_CourseId",
-                table: "Wishlists",
+                name: "IX_Wishlist_CourseId",
+                table: "Wishlist",
                 column: "CourseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wishlists_CourseId1",
-                table: "Wishlists",
-                column: "CourseId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Wishlists_UserId",
-                table: "Wishlists",
+                name: "IX_Wishlist_UserId",
+                table: "Wishlist",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Wishlists_UserId1",
-                table: "Wishlists",
-                column: "UserId1");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_CartOrderItems_Courses_CourseId",
@@ -1244,16 +1175,16 @@ namespace dotNetCources.Migrations
                 name: "QuestionAnswerMessages");
 
             migrationBuilder.DropTable(
-                name: "Reviews");
+                name: "Review");
 
             migrationBuilder.DropTable(
-                name: "Wishlists");
+                name: "Wishlist");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "EnrolledCourses");
+                name: "EnrolledCourse");
 
             migrationBuilder.DropTable(
                 name: "VariantItems");

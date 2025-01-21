@@ -12,8 +12,8 @@ using dotNetCources.Models;
 namespace dotNetCources.Migrations
 {
     [DbContext(typeof(AppContextDB))]
-    [Migration("20250117180015_ALLMig5")]
-    partial class ALLMig5
+    [Migration("20250121135611_INIT")]
+    partial class INIT
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -413,11 +413,11 @@ namespace dotNetCources.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<string>("EnrolledCourseEnrollmentId")
-                        .HasColumnType("varchar(255)");
-
                     b.Property<string>("EnrolledCourseId")
                         .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("EnrolledCourseId1")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("LessonTitle")
@@ -438,9 +438,9 @@ namespace dotNetCources.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("EnrolledCourseEnrollmentId");
-
                     b.HasIndex("EnrolledCourseId");
+
+                    b.HasIndex("EnrolledCourseId1");
 
                     b.HasIndex("UserId");
 
@@ -596,20 +596,18 @@ namespace dotNetCources.Migrations
 
             modelBuilder.Entity("dotNetCources.Models.EnrolledCourse", b =>
                 {
-                    b.Property<string>("EnrollmentId")
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.Property<string>("EnrollmentId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.Property<int>("OrderItemId")
                         .HasColumnType("int");
@@ -618,18 +616,11 @@ namespace dotNetCources.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("EnrollmentId")
-                        .HasName("PK_EnrolledCourse");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("CourseId1");
 
                     b.HasIndex("OrderItemId");
 
@@ -637,9 +628,7 @@ namespace dotNetCources.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("EnrolledCourses");
+                    b.ToTable("EnrolledCourse");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Profile", b =>
@@ -772,9 +761,6 @@ namespace dotNetCources.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
@@ -789,21 +775,13 @@ namespace dotNetCources.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id")
-                        .HasName("PK_Review");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("CourseId1");
-
                     b.HasIndex("UserId");
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("Reviews");
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.Teacher", b =>
@@ -1042,28 +1020,17 @@ namespace dotNetCources.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CourseId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id")
-                        .HasName("PK_Wishlist");
+                    b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("CourseId1");
-
                     b.HasIndex("UserId");
 
-                    b.HasIndex("UserId1");
-
-                    b.ToTable("Wishlists");
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("CouponUser", b =>
@@ -1214,15 +1181,15 @@ namespace dotNetCources.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dotNetCources.Models.EnrolledCourse", null)
-                        .WithMany("CompletedLessons")
-                        .HasForeignKey("EnrolledCourseEnrollmentId");
-
                     b.HasOne("dotNetCources.Models.EnrolledCourse", "EnrolledCourse")
                         .WithMany()
                         .HasForeignKey("EnrolledCourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("dotNetCources.Models.EnrolledCourse", null)
+                        .WithMany("CompletedLessons")
+                        .HasForeignKey("EnrolledCourseId1");
 
                     b.HasOne("dotNetCources.Models.User", "User")
                         .WithMany()
@@ -1290,14 +1257,10 @@ namespace dotNetCources.Migrations
             modelBuilder.Entity("dotNetCources.Models.EnrolledCourse", b =>
                 {
                     b.HasOne("dotNetCources.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("EnrolledCourses")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("dotNetCources.Models.Course", null)
-                        .WithMany("EnrolledCourses")
-                        .HasForeignKey("CourseId1");
 
                     b.HasOne("dotNetCources.Models.CartOrderItem", "OrderItem")
                         .WithMany()
@@ -1306,20 +1269,14 @@ namespace dotNetCources.Migrations
                         .IsRequired();
 
                     b.HasOne("dotNetCources.Models.Teacher", "Teacher")
-                        .WithMany()
+                        .WithMany("EnrolledCourses")
                         .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.SetNull)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("dotNetCources.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("dotNetCources.Models.User", null)
                         .WithMany("EnrolledCourses")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Course");
 
@@ -1386,24 +1343,16 @@ namespace dotNetCources.Migrations
             modelBuilder.Entity("dotNetCources.Models.Review", b =>
                 {
                     b.HasOne("dotNetCources.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dotNetCources.Models.Course", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("CourseId1");
-
                     b.HasOne("dotNetCources.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("dotNetCources.Models.User", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Course");
 
@@ -1454,24 +1403,16 @@ namespace dotNetCources.Migrations
             modelBuilder.Entity("dotNetCources.Models.Wishlist", b =>
                 {
                     b.HasOne("dotNetCources.Models.Course", "Course")
-                        .WithMany()
+                        .WithMany("Wishlists")
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("dotNetCources.Models.Course", null)
-                        .WithMany("Wishlists")
-                        .HasForeignKey("CourseId1");
-
                     b.HasOne("dotNetCources.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("dotNetCources.Models.User", null)
                         .WithMany("Wishlists")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Course");
 
@@ -1527,6 +1468,8 @@ namespace dotNetCources.Migrations
             modelBuilder.Entity("dotNetCources.Models.Teacher", b =>
                 {
                     b.Navigation("Courses");
+
+                    b.Navigation("EnrolledCourses");
                 });
 
             modelBuilder.Entity("dotNetCources.Models.User", b =>

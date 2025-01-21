@@ -36,8 +36,8 @@ namespace dotNetCources.Models
 		public string Country { get; set; }
 
 		public virtual ICollection<Course> Courses { get; set; }
-
-		public override string ToString()
+        public virtual ICollection<EnrolledCourse> EnrolledCourses { get; set; }
+        public override string ToString()
 		{
 			return FullName;
 		}

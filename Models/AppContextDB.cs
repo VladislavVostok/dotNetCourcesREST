@@ -18,9 +18,9 @@ namespace dotNetCources.Models
 		public DbSet<VariantItem> VariantItems { get; set; }
 		public DbSet<Certificate> Certificates { get; set; }
 		public DbSet<CompletedLesson> CompletedLessons { get; set; }
-		public DbSet<EnrolledCourse> EnrolledCourses { get; set; }
-		public DbSet<Review> Reviews { get; set; }
-		public DbSet<Wishlist> Wishlists { get; set; }
+		//public DbSet<EnrolledCourse> EnrolledCourses { get; set; }
+		//public DbSet<Review> Reviews { get; set; }
+		//public DbSet<Wishlist> Wishlists { get; set; }
 		public DbSet<Country> Countries { get; set; }
 		public DbSet<User> Users { get; set; }
 
@@ -103,61 +103,61 @@ namespace dotNetCources.Models
 				.OnDelete(DeleteBehavior.Cascade);
 
 
-			// Fluent API EnrolledCourse
-			modelBuilder.Entity<EnrolledCourse>().HasKey(ec => ec.EnrollmentId).HasName("PK_EnrolledCourse");
+            //modelBuilder.Entity<EnrolledCourse>(entity =>
+            //{
+            //    entity.HasKey(e => e.Id);
 
-			modelBuilder.Entity<EnrolledCourse>()
-				.HasOne(ec => ec.Course)
-				.WithMany()
-				.HasForeignKey(ec => ec.CourseId)
-				.OnDelete(DeleteBehavior.Cascade);
+            //    // Настройка внешнего ключа для TeacherId
+            //    entity.HasOne(e => e.Teacher)
+            //          .WithMany() // Если у Teacher нет коллекции EnrolledCourses
+            //          .HasForeignKey(e => e.TeacherId)
+            //          .OnDelete(DeleteBehavior.SetNull); // При удалении Teacher — NULL
 
-			modelBuilder.Entity<EnrolledCourse>()
-				.HasOne(ec => ec.User)
-				.WithMany()
-				.HasForeignKey(ec => ec.UserId)
-				.OnDelete(DeleteBehavior.SetNull);
+            //    // Остальные ключи
+            //    entity.HasOne(e => e.User)
+            //          .WithMany()
+            //          .HasForeignKey(e => e.UserId)
+            //          .OnDelete(DeleteBehavior.Restrict); // Пример, если не требуется удаление
 
-			modelBuilder.Entity<EnrolledCourse>()
-				.HasOne(ec => ec.Teacher)
-				.WithMany()
-				.HasForeignKey(ec => ec.TeacherId)
-				.OnDelete(DeleteBehavior.SetNull);
+            //    entity.HasOne(e => e.Course)
+            //          .WithMany()
+            //          .HasForeignKey(e => e.CourseId)
+            //          .OnDelete(DeleteBehavior.Cascade);
 
-			modelBuilder.Entity<EnrolledCourse>()
-				.HasOne(ec => ec.OrderItem)
-				.WithMany()
-				.HasForeignKey(ec => ec.OrderItemId)
-				.OnDelete(DeleteBehavior.Cascade);
+            //    entity.HasOne(e => e.OrderItem)
+            //          .WithMany()
+            //          .HasForeignKey(e => e.OrderItemId)
+            //          .OnDelete(DeleteBehavior.Restrict); // Необязательно
+            //});
 
 
-			// Fluent API Review 
-			modelBuilder.Entity<Review>().HasKey(r => r.Id).HasName("PK_Review");
+            // Fluent API Review 
+   //         modelBuilder.Entity<Review>().HasKey(r => r.Id).HasName("PK_Review");
 
-			modelBuilder.Entity<Review>()
-				.HasOne(r => r.Course)
-				.WithMany()
-				.HasForeignKey(r => r.CourseId)
-				.OnDelete(DeleteBehavior.Cascade);
+			//modelBuilder.Entity<Review>()
+			//	.HasOne(r => r.Course)
+			//	.WithMany()
+			//	.HasForeignKey(r => r.CourseId)
+			//	.OnDelete(DeleteBehavior.Cascade);
 
-			modelBuilder.Entity<Review>()
-				.HasOne(r => r.User)
-				.WithMany()
-				.HasForeignKey(r => r.UserId)
-				.OnDelete(DeleteBehavior.SetNull);
+			//modelBuilder.Entity<Review>()
+			//	.HasOne(r => r.User)
+			//	.WithMany()
+			//	.HasForeignKey(r => r.UserId)
+			//	.OnDelete(DeleteBehavior.SetNull);
 
 			// Fluent API Wishlist
-			modelBuilder.Entity<Wishlist>().HasKey(w => w.Id).HasName("PK_Wishlist");
-			modelBuilder.Entity<Wishlist>()
-				.HasOne(w => w.Course)
-				.WithMany()
-				.HasForeignKey(w => w.CourseId)
-				.OnDelete(DeleteBehavior.Cascade);
-			modelBuilder.Entity<Wishlist>()
-				.HasOne(w => w.User)
-				.WithMany()
-				.HasForeignKey(w => w.UserId)
-				.OnDelete(DeleteBehavior.SetNull);
+			//modelBuilder.Entity<Wishlist>().HasKey(w => w.Id).HasName("PK_Wishlist");
+			//modelBuilder.Entity<Wishlist>()
+			//	.HasOne(w => w.Course)
+			//	.WithMany()
+			//	.HasForeignKey(w => w.CourseId)
+			//	.OnDelete(DeleteBehavior.Cascade);
+			//modelBuilder.Entity<Wishlist>()
+			//	.HasOne(w => w.User)
+			//	.WithMany()
+			//	.HasForeignKey(w => w.UserId)
+			//	.OnDelete(DeleteBehavior.SetNull);
 
 			// Fluent API Country
 			modelBuilder.Entity<Country>().HasKey(c => c.Id).HasName("PK_Country");
