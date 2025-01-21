@@ -17,9 +17,12 @@ namespace dotNetCources.Models
 		public int CourseId { get; set; }
 		public Course Course { get; set; }
 		[ForeignKey("Teacher")]
-		public int TeacherId { get; set; }	
-		public Teacher Teacher { get; set; }
-		[ForeignKey("CartOrderItem")]
+        public int? TeacherId { get; set; } // Nullable поле
+        public Teacher Teacher { get; set; } // Навигационное свойство
+
+
+
+        [ForeignKey("CartOrderItem")]
 		public int OrderItemId {  get; set; }
 		public CartOrderItem OrderItem { set; get; }
 		public string EnrollmentId { get; set; } = Guid.NewGuid().ToString();
