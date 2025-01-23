@@ -4,6 +4,7 @@
     {
         public string Uuid { get; set; }
         public string OTP { get; set; }
-        public string NewPassword { get; set; }
+        public string Password { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

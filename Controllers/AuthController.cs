@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using dotNetCources.DTO.Authorization;
+using System.Security.Claims;
 namespace dotNetCources.Controllers
 {
     [Route("api/[controller]")]
@@ -85,7 +86,7 @@ namespace dotNetCources.Controllers
 				await _userManager.UpdateAsync(user);
 
 				var link = $"http://localhost:5173/password-reset?otp={user.OTP}&uuid={user.Id}&refresh_token={user.RefreshToken}";
-				// TODO: Configure Email Sending
+
 
 				await _emailService.SendEmailAsync(user.Email, "Восстановление пароля", link);
 				Console.WriteLine($"Reset Link: {link}");
@@ -101,7 +102,7 @@ namespace dotNetCources.Controllers
 			return new string(Enumerable.Range(0, length).Select(_ => random.Next(0, 10).ToString()[0]).ToArray());
 		}
 
-		[HttpGet("password-reset")]
+		[HttpPost("password-reset")]
 		[AllowAnonymous]
 		public async Task<IActionResult> ResetPassword([FromQuery] PasswordResetDto resetDto)
 		{
@@ -111,7 +112,7 @@ namespace dotNetCources.Controllers
 				var result = await _userManager.RemovePasswordAsync(user);
 				if (result.Succeeded)
 				{
-					await _userManager.AddPasswordAsync(user, resetDto.NewPassword);
+					await _userManager.AddPasswordAsync(user, resetDto.Password);
 					user.OTP = null; // Clear the OTP
 					await _userManager.UpdateAsync(user);
 					return Ok(new { message = "Password changed successfully" });
@@ -142,6 +143,55 @@ namespace dotNetCources.Controllers
 		}
 
 
+		[Authorize]
+		[HttpPost("refresh")]
+		public async Task<IActionResult> Refresh()
+		{
+			if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+				return Unauthorized("No refresh token provided");
+
+			string userId = null;
+
+			var identity = HttpContext.User.Identity as ClaimsIdentity;
+			if (identity != null)
+			{
+				userId = //Convert.ToInt32(
+						identity?.FindFirst(ClaimTypes.UserData)?.Value;
+				// );
+			}
+
+
+			//var username = User?.Identity?.Name;
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+				return Unauthorized("User not found");
+
+			//TODO: Обратить внимание на логин провайдер вторым аргументом.
+			var storedToken = await _userManager.GetAuthenticationTokenAsync(user, "JwtAuthDemo", "RefreshToken");
+			if (storedToken != refreshToken)
+				return Unauthorized("Invalid refresh token");
+
+			var newAccessToken = _tokenService.GenerateAccessToken(user);
+			var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+			await _userManager.SetAuthenticationTokenAsync(user, "JwtAuthDemo", "RefreshToken", newRefreshToken);
+			SetRefreshTokenCookie(newRefreshToken);
+
+			return Ok(new { accessToken = newAccessToken });
+		}
+
+		private void SetRefreshTokenCookie(string refreshToken)
+		{
+			var cookieOptions = new CookieOptions
+			{
+				HttpOnly = true,
+				Secure = true,
+				SameSite = SameSiteMode.Strict,
+				Expires = DateTime.UtcNow.AddDays(7)
+			};
+
+			Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+		}
 	}
 }
 
