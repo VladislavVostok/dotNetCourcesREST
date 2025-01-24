@@ -16,84 +16,54 @@ namespace dotNetCources.Controllers
 		private readonly ITokenService _tokenService;
 		private readonly IProfileService _profileService;
 		private readonly IEmailService _emailService;
+		private readonly IAuthService _authService;
 
 		public AuthController(	UserManager<User> userManager, 
 								ITokenService tokenService, 
-								IEmailService emailService){
+								IEmailService emailService,
+								IAuthService authService){
 			_userManager = userManager;
 			_tokenService = tokenService;
 			_emailService = emailService;
+			_authService = authService;
 		}
 
 		[HttpPost("login")]
 		[AllowAnonymous]
 		public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
 		{
-			var user = await _userManager.FindByEmailAsync(loginDto.Email);
-			if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
-			{
-				var accessToken = _tokenService.GenerateAccessToken(user);
-				var refreshToken = _tokenService.GenerateRefreshToken();
 
-				// Сохраните refreshToken в базе данных или другой системе
-				user.RefreshToken = refreshToken;
-				await _userManager.UpdateAsync(user);
+			Dictionary<string, string> res =  await _authService.Login(loginDto);
 
-				return Ok(
-					new
-						{
-							AccessToken = accessToken,
-							RefreshToken = refreshToken
-						}
-					);
+			if (res.ContainsKey("accessToken")) {
+
+				return Ok(res);
 			}
-
-			return Unauthorized(new { message = "Invalid credentials" });
+			return Unauthorized(res);
 		}
 
 		[HttpPost("register")]
 		[AllowAnonymous]
 		public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
 		{
-			User user = new User
-			{
-				Email = registerDto.Email,
-				UserName = registerDto.UserName,
-				FullName = registerDto.FullName
-			};
-
-			var result = await _userManager.CreateAsync(user, registerDto.Password);
-
-			if (result.Succeeded)
-			{
-				//_profileService.CreateProfileForUser(user);
-			
-				return Ok(new { message = "User registered successfully" });
+			Dictionary<string, object> res = await _authService.Register(registerDto);
+			if (res.ContainsKey("message"))
+			{	
+				return Ok(res);
 			}
 
-			return BadRequest(result.Errors);
+			return BadRequest(res);
 		}
 
 		[HttpGet("password-reset-email/{email}")]
 		[AllowAnonymous]
 		public async Task<IActionResult> SendPasswordResetEmail(string email)
 		{
-			var user = await _userManager.FindByEmailAsync(email);
-			if (user != null)
-			{
-				user.OTP = GenerateRandomOtp(7);
-				user.RefreshToken = _tokenService.GenerateRefreshToken(); // Simplified refresh token generation
-				await _userManager.UpdateAsync(user);
-
-				var link = $"http://localhost:5173/password-reset?otp={user.OTP}&uuid={user.Id}&refresh_token={user.RefreshToken}";
-
-
-				await _emailService.SendEmailAsync(user.Email, "Восстановление пароля", link);
-				Console.WriteLine($"Reset Link: {link}");
-				return Ok(new { message = "If the email exists, a reset link was sent." });
+			Dictionary<string, string> resp = await _authService.SendPasswordResetEmail(email);
+			if(resp.ContainsKey("message")) {
+				return Ok(resp);
 			}
-
-			return BadRequest(new { message = "Такого email не существует!" });
+			return BadRequest(resp);
 		}
 
 		private string GenerateRandomOtp(int length)
@@ -106,20 +76,13 @@ namespace dotNetCources.Controllers
 		[AllowAnonymous]
 		public async Task<IActionResult> ResetPassword([FromQuery] PasswordResetDto resetDto)
 		{
-			var user = await _userManager.FindByIdAsync(resetDto.Uuid);
-			if (user != null && user.OTP == resetDto.OTP)
-			{
-				var result = await _userManager.RemovePasswordAsync(user);
-				if (result.Succeeded)
-				{
-					await _userManager.AddPasswordAsync(user, resetDto.Password);
-					user.OTP = null; // Clear the OTP
-					await _userManager.UpdateAsync(user);
-					return Ok(new { message = "Password changed successfully" });
-				}
-			}
+			Dictionary<string, string> resp = await _authService.ResetPassword(resetDto);	
 
-			return NotFound(new { message = "Invalid OTP or user not found" });
+			if (resp.ContainsKey("message"))
+			{
+					return Ok(resp);
+			}
+			return NotFound(resp);
 		}
 
 
@@ -127,19 +90,18 @@ namespace dotNetCources.Controllers
 		[Authorize]
 		public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changeDto)
 		{
-			var user = await _userManager.FindByIdAsync(changeDto.UserId);
-			if (user != null)
+			Dictionary<string, string> resp = await _authService.ChangePassword(changeDto);
+			string value = "";
+			resp.TryGetValue("icon", out value);
+
+			switch (value)
 			{
-				var result = await _userManager.ChangePasswordAsync(user, changeDto.OldPassword, changeDto.NewPassword);
-				if (result.Succeeded)
-				{
-					return Ok(new { message = "Password changed successfully", icon = "success" });
-				}
-
-				return BadRequest(new { message = "Old password is incorrect", icon = "warning" });
-			}
-
-			return NotFound(new { message = "User does not exist", icon = "error" });
+				case "success":
+					return Ok(resp);
+				case "warning":
+					return BadRequest((resp));
+			}		
+			return NotFound(resp);
 		}
 
 
@@ -155,13 +117,8 @@ namespace dotNetCources.Controllers
 			var identity = HttpContext.User.Identity as ClaimsIdentity;
 			if (identity != null)
 			{
-				userId = //Convert.ToInt32(
-						identity?.FindFirst(ClaimTypes.UserData)?.Value;
-				// );
+				userId = identity?.FindFirst(ClaimTypes.UserData)?.Value;
 			}
-
-
-			//var username = User?.Identity?.Name;
 			var user = await _userManager.FindByIdAsync(userId);
 			if (user == null)
 				return Unauthorized("User not found");

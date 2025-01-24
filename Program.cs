@@ -49,6 +49,10 @@ namespace dotNetCources
 					configuration.GetSection("EmailSettings")
 				);
 
+			builder.Services.Configure<FrontendServerSettings>(
+					configuration.GetSection("FrontendServerSettings")
+				);
+
 			// Добавляем JWT аутентификацию
 			builder.Services.AddAuthentication(options =>
 			{
@@ -84,6 +88,7 @@ namespace dotNetCources
 			builder.Services.AddScoped<ITokenService, TokenService>();
 			builder.Services.AddScoped<ICategoryService, CategoryService>();
 			builder.Services.AddTransient<IEmailService, EmailService>();
+			builder.Services.AddTransient<IAuthService, AuthService>();
 
 
 
